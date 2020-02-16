@@ -17,17 +17,22 @@ from .settings import cj
 
 log = logging.getLogger(__name__)
 
-
 FAIL_ENCODING = 'ISO-8859-1'
 
 
-def get_request_kwargs(timeout, useragent, proxies, headers):
+def get_request_kwargs(timeout, useragent, proxies, headers, cookies=None):
     """This Wrapper method exists b/c some values in req_kwargs dict
     are methods which need to be called every time we make a request
     """
+
+    if cookies:
+        set_cookies = cookies
+    else:
+        set_cookies = cj()
+
     return {
         'headers': headers if headers else {'User-Agent': useragent},
-        'cookies': cj(),
+        'cookies': set_cookies,
         'timeout': timeout,
         'allow_redirects': True,
         'proxies': proxies
@@ -55,12 +60,13 @@ def get_html_2XX_only(url, config=None, response=None):
     timeout = config.request_timeout
     proxies = config.proxies
     headers = config.headers
+    cookies = config.cookies
 
     if response is not None:
         return _get_html_from_response(response, config)
 
     response = requests.get(
-        url=url, **get_request_kwargs(timeout, useragent, proxies, headers))
+        url=url, **get_request_kwargs(timeout, useragent, proxies, headers, cookies))
 
     html = _get_html_from_response(response, config)
 
@@ -94,6 +100,7 @@ class MRequest(object):
     If this is the case, we still want to report the url which has failed
     so (perhaps) we can try again later.
     """
+
     def __init__(self, url, config=None):
         self.url = url
         self.config = config
@@ -133,4 +140,3 @@ def multithread_request(urls, config=None):
 
     pool.wait_completion()
     return m_requests
-

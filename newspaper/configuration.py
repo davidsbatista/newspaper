@@ -126,7 +126,9 @@ class Configuration(object):
 
 
 class ArticleConfiguration(Configuration):
-    pass
+    def __init__(self, cookies=None):
+        super().__init__()
+        self.cookies = cookies
 
 
 class SourceConfiguration(Configuration):
