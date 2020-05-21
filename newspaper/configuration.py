@@ -63,7 +63,9 @@ class Configuration(object):
         # Unique stopword classes for oriental languages, don't toggle
         self.stopwords_class = StopWords
 
-        self.browser_user_agent = 'newspaper/%s' % __version__
+        self.browser_user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) ' \
+                                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 ' \
+                                  'Safari/537.36'
         self.headers = {}
         self.request_timeout = 7
         self.proxies = {}
